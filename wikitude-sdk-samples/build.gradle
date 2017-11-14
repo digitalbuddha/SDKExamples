@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion commonCompileSdkVersion
+    buildToolsVersion commonBuildToolsVersion
+
+    defaultConfig {
+        applicationId "com.wikitude.sdksamples"
+        minSdkVersion commonMinSdkVersion
+        targetSdkVersion commonTargetSdkVersion
+        versionName "7.1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            debuggable true
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each  { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = "wikitude-sdk-samples-" + variant.buildType.name + ".apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+
+    flavorDimensions "arch"
+
+    productFlavors {
+        arm7 {
+            dimension "arch"
+        }
+        arm8 {
+            dimension "arch"
+        }
+        x86 {
+            dimension "arch"
+        }
+        allarchs {
+            dimension "arch"
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile(name: 'wikitudesdk', ext: 'aar')
+
+//    arm7Compile project(path: ':plugins', configuration: 'arm7Release')
+//    arm8Compile project(path: ':plugins', configuration: 'arm8Release')
+//    x86Compile project(path: ':plugins', configuration: 'x86Release')
+//    allarchsCompile project(path: ':plugins', configuration: 'allarchsRelease')
+
+    compile "com.android.support:appcompat-v7:$commonSupportLibVersion"
+    compile "com.android.support:design:$commonSupportLibVersion"
+    compile "com.android.support:support-v4:$commonSupportLibVersion"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
